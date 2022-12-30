@@ -32,7 +32,7 @@
 \spacing single
 \use_hyperref true
 \pdf_title "Developing and Deploying a Spring Microservice"
-\pdf_author "Lily Hopkins <lhopkins@softwareinstitute.com>"
+\pdf_author "Lily Hopkins <lily@hpkns.uk>"
 \pdf_keywords "spring, java, microservice, azure, aws, docker"
 \pdf_bookmarks true
 \pdf_bookmarksnumbered false
@@ -44,7 +44,7 @@
 \pdf_backref section
 \pdf_pdfusetitle true
 \papersize a4paper
-\use_geometry false
+\use_geometry true
 \use_package amsmath 1
 \use_package amssymb 1
 \use_package cancel 1
@@ -69,6 +69,10 @@
 \shortcut idx
 \color #008000
 \end_index
+\leftmargin 3cm
+\topmargin 4cm
+\rightmargin 3cm
+\bottommargin 4cm
 \secnumdepth 3
 \tocdepth 3
 \paragraph_separation indent
@@ -100,6 +104,15 @@ Lily Hopkins <lhopkins@softwareinstitute.com>
 \begin_layout Standard
 \begin_inset CommandInset toc
 LatexCommand tableofcontents
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset toc
+LatexCommand lstlistoflistings
 
 \end_inset
 
@@ -446,6 +459,926 @@ The Project Object Model.
 Writing your First Model and Repository
 \end_layout
 
+\begin_layout Subsection
+Connecting the Application to the Database
+\end_layout
+
+\begin_layout Standard
+In order to connect the application to the database, you should open the
+ 
+\emph on
+application.properties
+\emph default
+ file for editing.
+ This file can be found in 
+\emph on
+src/main/resources
+\emph default
+ and defines many possible properties about how the application will run.
+\end_layout
+
+\begin_layout Paragraph*
+Note:
+\end_layout
+
+\begin_layout Standard
+You may need to adjust the parameters here to match your own MySQL configuration.
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "numbers=left,basicstyle={\ttfamily}"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+
+\emph on
+application.properties
+\emph default
+ with the database settings
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+spring.datasource.url=jdbc:mysql://localhost:3306/sakila
+\end_layout
+
+\begin_layout Plain Layout
+
+spring.datasource.username=sakila
+\end_layout
+
+\begin_layout Plain Layout
+
+spring.datasource.password=tsi
+\end_layout
+
+\begin_layout Plain Layout
+
+spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
+\end_layout
+
+\begin_layout Plain Layout
+
+spring.jpa.show-sql=true
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+With this little effort, Spring now knows how to access the database! We
+ are ready to program.
+\end_layout
+
+\begin_layout Subsection
+Understanding the Database Structure
+\end_layout
+
+\begin_layout Standard
+When we are not making the database ourself, it is important to understand
+ the structure we are working with.
+ One way of doing this is by looking through an Entity Relationship Diagram
+ (Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sakila-erd"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+).
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement h
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "sakila-erd"
+
+\end_inset
+
+ERD for the Sakila Database, from the 
+\begin_inset CommandInset href
+LatexCommand href
+name "Sakila documentation"
+target "https://dev.mysql.com/doc/sakila/en/sakila-structure.html"
+literal "false"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename guide-images/erd.png
+	lyxscale 50
+	width 100text%
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+At first glance, this database is incredibly complex, with connections moving
+ all over the place.
+ It is useful to understand that the original intended purpose is to represent
+ a DVD rental shop, however this should not limit your imagination as to
+ how this data might be used.
+\end_layout
+
+\begin_layout Standard
+One of the simplest tables to start with is the 
+\emph on
+actor
+\emph default
+ table (top-left of figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sakila-erd"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+), as this only has one many-to-many link to 
+\emph on
+film
+\emph default
+.
+ As a result, we can initially ignore this link and introduce it later.
+\end_layout
+
+\begin_layout Subsection
+Writing the Actor Model
+\end_layout
+
+\begin_layout Standard
+A model in Spring represents a single data entity within the database.
+ It is an abstraction that should removes the worry about the underlying
+ SQL.
+\end_layout
+
+\begin_layout Standard
+As there will (eventually) be a large number of models, it is a good idea
+ to create a package to bundle them together.
+ In IntelliJ IDEA and working in the 
+\emph on
+main
+\emph default
+ directory, you can right-click on the current package (e.g.
+ 
+\emph on
+com.softwareinstitute.sakila
+\emph default
+) and select 
+\emph on
+New
+\emph default
+ → 
+\emph on
+Package
+\emph default
+.
+ You can then type in the new package name – 
+\emph on
+models
+\emph default
+ works well – so that the full package becomes 
+\emph on
+com.softwareinstitute.sakila.models
+\emph default
+.
+ Within this new package, we can create a Java class to represent our data,
+ 
+\emph on
+New 
+\emph default
+→ 
+\emph on
+Java Class
+\emph default
+.
+ The name is important, as JPA – the backend which converts our Java code
+ into SQL queries – will use this name to determine the correct database
+ table.
+ Given that our database table is called 
+\emph on
+actor
+\emph default
+, our class should be called 
+\emph on
+Actor
+\emph default
+.
+ If our database table was called 
+\emph on
+f1_drivers
+\emph default
+, our class should be called 
+\emph on
+F1Drivers
+\emph default
+
+\begin_inset Foot
+status collapsed
+
+\begin_layout Plain Layout
+As an aside, in the event that the database name would become an invalid
+ name in Java, for example a database name 
+\emph on
+1_up_tokens
+\emph default
+, (which would become the invalid class name 
+\emph on
+1UpTokens
+\emph default
+), we can use a more suitable class name (e.g.
+ 
+\emph on
+OneUpTokens
+\emph default
+) then use the 
+\emph on
+@Table(name = 
+\begin_inset Quotes eld
+\end_inset
+
+1_up_tokens
+\begin_inset Quotes erd
+\end_inset
+
+)
+\emph default
+ annotation to specify the link.
+\end_layout
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+In our new class, we should specify that it is a data entity using the 
+\emph on
+@Entity
+\emph default
+ annotation.
+ Your class should look like this:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "language=Java,basicstyle={\ttfamily},tabsize=2"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+
+\emph on
+Actor.java
+\emph default
+ after initialisation.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+package com.softwareinstitute.sakila.models;
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+import jakarta.persistence.Entity;
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+@Entity
+\end_layout
+
+\begin_layout Plain Layout
+
+public class Actor {
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+We can now specify our data.
+ Looking at the SQL DDL (Data Definition Language) for the 
+\emph on
+actor
+\emph default
+ table, we have the following:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "language=SQL,basicstyle={\ttfamily}"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+
+SQL DDL for 
+\emph on
+actor
+\emph default
+ table
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+CREATE TABLE actor (
+\end_layout
+
+\begin_layout Plain Layout
+
+  actor_id SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,
+\end_layout
+
+\begin_layout Plain Layout
+
+  first_name VARCHAR(45) NOT NULL,
+\end_layout
+
+\begin_layout Plain Layout
+
+  last_name VARCHAR(45) NOT NULL,
+\end_layout
+
+\begin_layout Plain Layout
+
+  last_update TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+\end_layout
+
+\begin_layout Plain Layout
+
+  PRIMARY KEY (actor_id)
+\end_layout
+
+\begin_layout Plain Layout
+
+);
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Which can convert directly to Java with JPA:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "language=Java,basicstyle={\ttfamily}"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+
+\emph on
+Actor.java
+\emph default
+ after we add fields from the database.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+package com.softwareinstitute.sakila.models;
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+import jakarta.persistence.Entity;
+\end_layout
+
+\begin_layout Plain Layout
+
+import jakarta.persistence.Id;
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+@Entity
+\end_layout
+
+\begin_layout Plain Layout
+
+public class Actor {
+\end_layout
+
+\begin_layout Plain Layout
+
+    @Id
+\end_layout
+
+\begin_layout Plain Layout
+
+    private Integer id;
+\end_layout
+
+\begin_layout Plain Layout
+
+    private String firstName;
+\end_layout
+
+\begin_layout Plain Layout
+
+    private String lastName;
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Notice how we don't have the 
+\emph on
+last_update
+\emph default
+ field? Because we aren't going to use it in our application and it has
+ a default value in SQL, we can just ignore it – SQL will always populate
+ it so it won't invalidate the 
+\emph on
+NOT NULL
+\emph default
+ constraint.
+\end_layout
+
+\begin_layout Standard
+Also notice how JPA will map the database field 
+\emph on
+first_name
+\emph default
+ to the Java value 
+\emph on
+firstName
+\emph default
+.
+ JPA will map in this pattern across the board, which allows us to adopt
+ a more Java-like naming scheme (camel case), despite our database using
+ something different (snake case).
+ JPA will also prefix the entity name to the ID field, turning the Java
+ 
+\emph on
+id
+\emph default
+ into the database column 
+\emph on
+actor_id
+\emph default
+.
+\end_layout
+
+\begin_layout Standard
+There is one last thing we need in order to be able to make use of our model.
+ We need the usual Java getters and setters.
+ After we add them, our file looks like this:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "language=Java,basicstyle={\ttfamily}"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+
+\emph on
+Actor.java
+\emph default
+ in it's completed form.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+package com.softwareinstitute.sakila.models;
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+import jakarta.persistence.Entity;
+\end_layout
+
+\begin_layout Plain Layout
+
+import jakarta.persistence.Id;
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+@Entity
+\end_layout
+
+\begin_layout Plain Layout
+
+public class Actor {
+\end_layout
+
+\begin_layout Plain Layout
+
+    @Id
+\end_layout
+
+\begin_layout Plain Layout
+
+    private Integer id;
+\end_layout
+
+\begin_layout Plain Layout
+
+    private String firstName;
+\end_layout
+
+\begin_layout Plain Layout
+
+    private String lastName;
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+    public Integer getId() {
+\end_layout
+
+\begin_layout Plain Layout
+
+        return id;
+\end_layout
+
+\begin_layout Plain Layout
+
+    }
+\end_layout
+
+\begin_layout Plain Layout
+
+    public void setId(Integer id) {
+\end_layout
+
+\begin_layout Plain Layout
+
+        this.id = id;
+\end_layout
+
+\begin_layout Plain Layout
+
+    }
+\end_layout
+
+\begin_layout Plain Layout
+
+    public String getFirstName() {
+\end_layout
+
+\begin_layout Plain Layout
+
+        return firstName;
+\end_layout
+
+\begin_layout Plain Layout
+
+    }
+\end_layout
+
+\begin_layout Plain Layout
+
+    public void setFirstName(String firstName) {
+\end_layout
+
+\begin_layout Plain Layout
+
+        this.firstName = firstName;
+\end_layout
+
+\begin_layout Plain Layout
+
+    }
+\end_layout
+
+\begin_layout Plain Layout
+
+    public String getLastName() {
+\end_layout
+
+\begin_layout Plain Layout
+
+        return lastName;
+\end_layout
+
+\begin_layout Plain Layout
+
+    }
+\end_layout
+
+\begin_layout Plain Layout
+
+    public void setLastName(String lastName) {
+\end_layout
+
+\begin_layout Plain Layout
+
+        this.lastName = lastName;
+\end_layout
+
+\begin_layout Plain Layout
+
+    }
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Paragraph*
+Important:
+\end_layout
+
+\begin_layout Standard
+Everything in our code depends on these models – it is worth spending the
+ most time making sure these models are accurate and well-formed.
+ The majority of errors from beginners in Spring come from small mistakes
+ in models!
+\end_layout
+
+\begin_layout Subsection
+Writing the Actor Repository
+\end_layout
+
+\begin_layout Standard
+Now that we have a model, we need to be able to represent the link between
+ that model and the database – this is where repositories come in.
+ First, lets make a package to house our repositories.
+ Right clicking on our root package (e.g.
+ 
+\emph on
+com.softwareinstitute.sakila
+\emph default
+) and selecting 
+\emph on
+New
+\emph default
+ → 
+\emph on
+Package
+\emph default
+, we enter the name 
+\emph on
+repositories
+\emph default
+ so that our full package name is, for example, 
+\emph on
+com.softwareinstitute.sakila.repositories
+\emph default
+.
+\end_layout
+
+\begin_layout Standard
+We can now right click on our new package and select 
+\emph on
+New
+\emph default
+ → 
+\emph on
+Java Class
+\emph default
+, entering 
+\emph on
+ActorRepository
+\emph default
+ as the name.
+ There is no requirement for it to be called this, however it is good practice
+ to adopt a system for naming things, and across the Spring ecosystem the
+ naming system 
+\emph on
+ModelRepository
+\emph default
+ is common.
+ This should be created as an interface, however if you forget to do this
+ it's an easy change afterwards.
+\end_layout
+
+\begin_layout Standard
+In order for this to adopt some functionality, we should change it so it
+ becomes a sub-interface of 
+\emph on
+JpaRepository<T, ID>
+\emph default
+.
+ When we do this, our repository looks like this:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "language=Java,basicstyle={\ttfamily}"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+
+\emph on
+ActorRepository.java
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+package com.softwareinstitute.sakila.repositories;
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+import com.softwareinstitute.sakila.models.Actor;
+\end_layout
+
+\begin_layout Plain Layout
+
+import org.springframework.data.jpa.repository.JpaRepository;
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+public interface ActorRepository extends JpaRepository<Actor, Integer> {
+ }
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Notice how we specify with 
+\emph on
+JpaRepository<T, ID>
+\emph default
+ two types.
+ The first type, 
+\emph on
+T
+\emph default
+, is the model we wish to connect to the database.
+ Of course, in this case we are using our just created 
+\emph on
+Actor
+\emph default
+ model.
+ The second type, 
+\emph on
+ID
+\emph default
+, is the type used for the primary key in the database.
+ In this case, our ID uses an integer to represent it, so we specify the
+ Java type 
+\emph on
+Integer
+\emph default
+.
+\end_layout
+
+\begin_layout Standard
+Done! We can now access our database from the code of our application –
+ however it doesn't do much yet.
+\end_layout
+
 \begin_layout Section
 Writing your First Controller
 \end_layout
@@ -454,7 +1387,7 @@ Writing your First Controller
 DRY (Don't Repeat Yourself)
 \end_layout
 
-\begin_layout Paragraph
+\begin_layout Paragraph*
 Important!
 \end_layout
 
@@ -466,6 +1399,13 @@ must
  understand everything that comes before it.
  This section will explain how to save considerable time and effort, but
  is only valuable to a develop who understands what it is doing.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Newpage pagebreak
+\end_inset
+
+
 \end_layout
 
 \begin_layout Part
@@ -494,6 +1434,24 @@ By deploying to a Docker container, you open up the ability to host your
  Azure and AWS both support Docker containers directly.
  You could also deploy to a Kubernetes cluster, which would allow scaling
  up to a huge size (think Google).
+\end_layout
+
+\begin_layout Standard
+\begin_inset Newpage pagebreak
+\end_inset
+
+
+\end_layout
+
+\begin_layout Part
+Extra Exercises
+\end_layout
+
+\begin_layout Standard
+If this has just whet your appetite for more Java, consider some of these
+ tasks as ways to extend your project and it's functionality.
+ Some pointers to guides will be included, including a level of difficulty
+ for each.
 \end_layout
 
 \end_body
