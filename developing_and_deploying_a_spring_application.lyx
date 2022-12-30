@@ -964,6 +964,11 @@ public class Actor {
 
 \begin_layout Plain Layout
 
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+\end_layout
+
+\begin_layout Plain Layout
+
     private Integer id;
 \end_layout
 
@@ -1091,6 +1096,11 @@ public class Actor {
 \begin_layout Plain Layout
 
     @Id
+\end_layout
+
+\begin_layout Plain Layout
+
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
 \end_layout
 
 \begin_layout Plain Layout
