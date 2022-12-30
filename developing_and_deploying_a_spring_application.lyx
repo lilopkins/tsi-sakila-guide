@@ -483,6 +483,13 @@ Note:
 
 \begin_layout Standard
 You may need to adjust the parameters here to match your own MySQL configuration.
+ If you seem to be getting failed connections for no explainable reason,
+ you might need to add 
+\emph on
+?useSSL=false&allowPublicKeyRetreival=true
+\emph default
+ to the end of the database URL, although this should be avoided outside
+ of a development environment.
 \end_layout
 
 \begin_layout Standard
