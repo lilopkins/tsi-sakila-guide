@@ -4302,6 +4302,464 @@ Your project is deployed!
 Deployment to AWS
 \end_layout
 
+\begin_layout Enumerate
+Create a clean JAR package to deploy with: 
+\emph on
+mvn clean package spring-boot:repackage
+\end_layout
+
+\begin_layout Enumerate
+Sign in to the AWS Management Console, and then open the Elastic Beanstalk
+ console.
+\end_layout
+
+\begin_layout Enumerate
+Choose 
+\begin_inset Quotes eld
+\end_inset
+
+Create New Application
+\begin_inset Quotes erd
+\end_inset
+
+.
+ Enter a suitable name and click 
+\begin_inset Quotes eld
+\end_inset
+
+Next
+\begin_inset Quotes erd
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Enumerate
+Select 
+\begin_inset Quotes eld
+\end_inset
+
+Create web server
+\begin_inset Quotes erd
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Enumerate
+Select 
+\begin_inset Quotes eld
+\end_inset
+
+Java
+\begin_inset Quotes erd
+\end_inset
+
+ from 
+\begin_inset Quotes eld
+\end_inset
+
+Predefined configuration
+\begin_inset Quotes erd
+\end_inset
+
+, and 
+\begin_inset Quotes eld
+\end_inset
+
+Load balancing, auto scaling
+\begin_inset Quotes erd
+\end_inset
+
+ for the 
+\begin_inset Quotes eld
+\end_inset
+
+Environment type
+\begin_inset Quotes erd
+\end_inset
+
+.
+ Select 
+\begin_inset Quotes eld
+\end_inset
+
+Change platform version
+\begin_inset Quotes erd
+\end_inset
+
+ and select 
+\begin_inset Quotes eld
+\end_inset
+
+Java 17
+\begin_inset Quotes erd
+\end_inset
+
+.
+ Click 
+\begin_inset Quotes eld
+\end_inset
+
+Next
+\begin_inset Quotes erd
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Enumerate
+Select 
+\begin_inset Quotes eld
+\end_inset
+
+Upload your own
+\begin_inset Quotes erd
+\end_inset
+
+ and upload the JAR file in the 
+\emph on
+target
+\emph default
+ directory of your project.
+\end_layout
+
+\begin_layout Enumerate
+Choose an environment name and URL that is available.
+ Click 
+\begin_inset Quotes eld
+\end_inset
+
+Next
+\begin_inset Quotes erd
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Enumerate
+Check both 
+\begin_inset Quotes eld
+\end_inset
+
+Create an RDS DB Instance with this environment
+\begin_inset Quotes erd
+\end_inset
+
+ and 
+\begin_inset Quotes eld
+\end_inset
+
+Create this environment inside a VPC
+\begin_inset Quotes erd
+\end_inset
+
+.
+ Click 
+\begin_inset Quotes eld
+\end_inset
+
+Next
+\begin_inset Quotes erd
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Enumerate
+Select 
+\begin_inset Quotes eld
+\end_inset
+
+Instance type
+\begin_inset Quotes erd
+\end_inset
+
+ to 
+\begin_inset Quotes eld
+\end_inset
+
+t2.small
+\begin_inset Quotes erd
+\end_inset
+
+ and set 
+\begin_inset Quotes eld
+\end_inset
+
+Application health check URL
+\begin_inset Quotes erd
+\end_inset
+
+ to 
+\begin_inset Quotes eld
+\end_inset
+
+/
+\begin_inset Quotes erd
+\end_inset
+
+.
+ Click 
+\begin_inset Quotes eld
+\end_inset
+
+Next
+\begin_inset Quotes erd
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Enumerate
+Click 
+\begin_inset Quotes eld
+\end_inset
+
+Next
+\begin_inset Quotes erd
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Enumerate
+Select 
+\begin_inset Quotes eld
+\end_inset
+
+DB engine
+\begin_inset Quotes erd
+\end_inset
+
+ to 
+\begin_inset Quotes eld
+\end_inset
+
+mysql
+\begin_inset Quotes erd
+\end_inset
+
+ and 
+\begin_inset Quotes eld
+\end_inset
+
+Instance class
+\begin_inset Quotes erd
+\end_inset
+
+ to 
+\begin_inset Quotes eld
+\end_inset
+
+db.t2.small
+\begin_inset Quotes erd
+\end_inset
+
+.
+ Enter a username and password.
+ Click 
+\begin_inset Quotes eld
+\end_inset
+
+Next
+\begin_inset Quotes erd
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Enumerate
+Check 
+\begin_inset Quotes eld
+\end_inset
+
+Associate Public IP Address
+\begin_inset Quotes erd
+\end_inset
+
+.
+ For 
+\begin_inset Quotes eld
+\end_inset
+
+VPC security group
+\begin_inset Quotes erd
+\end_inset
+
+ select the default security group already created for your default VPC.
+ Click 
+\begin_inset Quotes eld
+\end_inset
+
+Next
+\begin_inset Quotes erd
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Enumerate
+Click 
+\begin_inset Quotes eld
+\end_inset
+
+Next
+\begin_inset Quotes erd
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Enumerate
+On the Configuration page in your environment, under Software Configuration,
+ click the settings icon.
+\end_layout
+
+\begin_layout Enumerate
+Find 
+\begin_inset Quotes eld
+\end_inset
+
+Environment Properties
+\begin_inset Quotes erd
+\end_inset
+
+.
+ Add new properties with the following details.
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Tabular
+<lyxtabular version="3" rows="5" columns="2">
+<features tabularvalignment="middle">
+<column alignment="right" valignment="top">
+<column alignment="left" valignment="top">
+<row>
+<cell alignment="right" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Name
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Value
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="right" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family typewriter
+SERVER_PORT
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+5000
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="right" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family typewriter
+MYSQL_HOST
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Environment Configuration → Data Tier → RDS → Endpoint
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="right" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family typewriter
+MYSQL_USER
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+your RDS username from earlier
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="right" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family typewriter
+MYSQL_PASSWORD
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+your RDS password from earlier
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Enumerate
+Loading the default data into the database is left as an exercise to the
+ reader.
+\end_layout
+
+\begin_layout Enumerate
+You are deployed on AWS!
+\end_layout
+
 \begin_layout Section
 Deployment to Docker Container
 \end_layout
