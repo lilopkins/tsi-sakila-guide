@@ -976,7 +976,7 @@ public class Actor {
 
 \begin_layout Plain Layout
 
-    private Integer id;
+    private Integer actorId;
 \end_layout
 
 \begin_layout Plain Layout
@@ -1026,16 +1026,6 @@ firstName
  JPA will map in this pattern across the board, which allows us to adopt
  a more Java-like naming scheme (camel case), despite our database using
  something different (snake case).
- JPA will also prefix the entity name to the ID field, turning the Java
- 
-\emph on
-id
-\emph default
- into the database column 
-\emph on
-actor_id
-\emph default
-.
 \end_layout
 
 \begin_layout Standard
@@ -1112,7 +1102,7 @@ public class Actor {
 
 \begin_layout Plain Layout
 
-    private Integer id;
+    private Integer actorId;
 \end_layout
 
 \begin_layout Plain Layout
@@ -1131,12 +1121,12 @@ public class Actor {
 
 \begin_layout Plain Layout
 
-    public Integer getId() {
+    public Integer getActorId() {
 \end_layout
 
 \begin_layout Plain Layout
 
-        return id;
+        return actorId;
 \end_layout
 
 \begin_layout Plain Layout
@@ -1146,12 +1136,12 @@ public class Actor {
 
 \begin_layout Plain Layout
 
-    public void setId(Integer id) {
+    public void setActorId(Integer actorId) {
 \end_layout
 
 \begin_layout Plain Layout
 
-        this.id = id;
+        this.actorId = actorId;
 \end_layout
 
 \begin_layout Plain Layout

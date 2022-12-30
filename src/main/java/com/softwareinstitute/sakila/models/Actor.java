@@ -9,16 +9,16 @@ import jakarta.persistence.Id;
 public class Actor {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Integer actorId;
     private String firstName;
     private String lastName;
 
-    public Integer getId() {
-        return id;
+    public Integer getActorId() {
+        return actorId;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public void setActorId(Integer actorId) {
+        this.actorId = actorId;
     }
 
     public String getFirstName() {
