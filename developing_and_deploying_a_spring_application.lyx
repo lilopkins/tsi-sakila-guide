@@ -3675,6 +3675,629 @@ This allows us to change the database hostname, port, username, password
 Deployment to Azure
 \end_layout
 
+\begin_layout Standard
+This guide assumes that the user already has an 
+\begin_inset CommandInset href
+LatexCommand href
+name "Azure"
+target "https://azure.com"
+literal "false"
+
+\end_inset
+
+ account.
+\end_layout
+
+\begin_layout Subsection
+Host the backend API
+\end_layout
+
+\begin_layout Enumerate
+Within your Spring project, run the following command: 
+\emph on
+mvn com.microsoft.azure:azure-webapp-maven-plugin:2.5.0:config
+\end_layout
+
+\begin_layout Enumerate
+When your browser appears, sign in to Azure.
+\end_layout
+
+\begin_layout Enumerate
+When asked, select Linux and Java 17.
+\end_layout
+
+\begin_layout Enumerate
+For the pricing tier, select either Basic 1 (B1, option 1) or Free 1 (F1,
+ option 8).
+ I recommend the latter to save on using your free Azure credit.
+\end_layout
+
+\begin_layout Enumerate
+Confirm your choices with "y".
+\end_layout
+
+\begin_layout Enumerate
+Deploy your app (even though it 
+\emph on
+will
+\emph default
+ be broken as it is not yet configured for your database): 
+\emph on
+mvn package azure-webapp:deploy
+\end_layout
+
+\begin_layout Enumerate
+Again, sign in when your browser appears.
+\end_layout
+
+\begin_layout Enumerate
+Go to the 
+\begin_inset CommandInset href
+LatexCommand href
+name "Azure Portal"
+target "https://portal.azure.com"
+literal "false"
+
+\end_inset
+
+ and find your app resource.
+\end_layout
+
+\begin_layout Enumerate
+Find 
+\begin_inset Quotes eld
+\end_inset
+
+CORS
+\begin_inset Quotes erd
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Enumerate
+In 
+\begin_inset Quotes eld
+\end_inset
+
+Allowed Origins
+\begin_inset Quotes erd
+\end_inset
+
+, add 
+\begin_inset Quotes eld
+\end_inset
+
+*
+\begin_inset Quotes erd
+\end_inset
+
+.
+ Click 
+\begin_inset Quotes eld
+\end_inset
+
+Save
+\begin_inset Quotes erd
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Subsection
+Host the database
+\end_layout
+
+\begin_layout Subsubsection
+Create the Azure MySQL Database
+\end_layout
+
+\begin_layout Enumerate
+From the Azure Portal, select 
+\begin_inset Quotes eld
+\end_inset
+
+Create a resource
+\begin_inset Quotes erd
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Enumerate
+Search for 
+\begin_inset Quotes eld
+\end_inset
+
+Azure Database for MySQL".
+\end_layout
+
+\begin_layout Enumerate
+Select 
+\begin_inset Quotes eld
+\end_inset
+
+Create
+\begin_inset Quotes erd
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Enumerate
+Select 
+\begin_inset Quotes eld
+\end_inset
+
+Single server
+\begin_inset Quotes erd
+\end_inset
+
+ and press 
+\begin_inset Quotes eld
+\end_inset
+
+Create
+\begin_inset Quotes erd
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Enumerate
+Select the Resource Group that was automatically created when the app was
+ deployed.
+\end_layout
+
+\begin_layout Enumerate
+Enter a server name - it can be anything but will become part of the database
+ URL.
+\end_layout
+
+\begin_layout Enumerate
+Choose Version 8.0.
+\end_layout
+
+\begin_layout Enumerate
+
+\series bold
+IMPORTANT
+\series default
+: Make sure you configure your server to something appropriate, otherwise
+ you could be charged a lot of money!
+\end_layout
+
+\begin_layout Enumerate
+Select 
+\begin_inset Quotes eld
+\end_inset
+
+Basic
+\begin_inset Quotes erd
+\end_inset
+
+ tier.
+ I recommend selecting the lowest values for everything as this is plenty
+ for a small scale service.
+ The estimated monthly cost should only be able 26 USD.
+\end_layout
+
+\begin_layout Enumerate
+Press 
+\begin_inset Quotes eld
+\end_inset
+
+Review + Create,
+\begin_inset Quotes erd
+\end_inset
+
+ then 
+\begin_inset Quotes eld
+\end_inset
+
+Create
+\begin_inset Quotes erd
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Enumerate
+Wait for Azure to finish deploying the database.
+ Then select 
+\begin_inset Quotes eld
+\end_inset
+
+Go to resource.
+\begin_inset Quotes erd
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection
+Configure the Firewall
+\end_layout
+
+\begin_layout Enumerate
+Once the database is created...
+\end_layout
+
+\begin_layout Enumerate
+Go to the 
+\begin_inset Quotes eld
+\end_inset
+
+Connection security
+\begin_inset Quotes erd
+\end_inset
+
+ settings.
+\end_layout
+
+\begin_layout Enumerate
+Choose 
+\begin_inset Quotes eld
+\end_inset
+
+Yes
+\begin_inset Quotes erd
+\end_inset
+
+ for 
+\begin_inset Quotes eld
+\end_inset
+
+Allow access to Azure services
+\begin_inset Quotes erd
+\end_inset
+
+, and click 
+\begin_inset Quotes eld
+\end_inset
+
+Add current client IP address
+\begin_inset Quotes erd
+\end_inset
+
+.
+ This is allowing connections from your current connection (so we can initialise
+ the sakila data), and from other Azure services (for the app to connect
+ to).
+\end_layout
+
+\begin_layout Enumerate
+Select 
+\begin_inset Quotes eld
+\end_inset
+
+Save
+\begin_inset Quotes erd
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Subsubsection
+Configure the database for sakila
+\end_layout
+
+\begin_layout Enumerate
+Go to the 
+\begin_inset Quotes eld
+\end_inset
+
+Server parameters
+\begin_inset Quotes erd
+\end_inset
+
+ settings:
+\end_layout
+
+\begin_layout Enumerate
+Search for 
+\emph on
+log_bin_trust_function_creators
+\emph default
+ and set to ON
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+This allows the 
+\emph on
+sakila-schema.sql
+\emph default
+ script to load the sakila database in to the server without being blocked
+ by the default Azure set-up, which prevents triggers being used from users
+ not granted the SUPER permission.
+\end_layout
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Enumerate
+Select 
+\begin_inset Quotes eld
+\end_inset
+
+Save
+\begin_inset Quotes erd
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Subsubsection
+Add the sakila data
+\end_layout
+
+\begin_layout Enumerate
+Download the 
+\begin_inset CommandInset href
+LatexCommand href
+name "sakila data"
+target "https://downloads.mysql.com/docs/sakila-db.zip"
+literal "false"
+
+\end_inset
+
+.
+ Extract it - we will need the 
+\emph on
+sakila-schema.sql
+\emph default
+ and 
+\emph on
+sakila-data.sql
+\emph default
+ scripts for this step.
+\end_layout
+
+\begin_layout Enumerate
+Open MySQL Workbench.
+ Add a new connection with the (+) button.
+\end_layout
+
+\begin_layout Enumerate
+Enter the hostname, which is the name of your Azure database as a URL.
+ In this example, the database is called 
+\emph on
+sakila-database-example
+\emph default
+, so the hostname is: 
+\emph on
+sakila-database-example.mysql.database.azure.com
+\emph default
+.
+\end_layout
+
+\begin_layout Enumerate
+Enter the username, which is the username you entered during setup, then
+ the name of your database.
+ For this example: 
+\emph on
+tsi@sakila-database-example
+\emph default
+.
+\end_layout
+
+\begin_layout Enumerate
+Connect to the database and enter your password when required.
+\end_layout
+
+\begin_layout Enumerate
+Go to 
+\begin_inset Quotes eld
+\end_inset
+
+File
+\begin_inset Quotes erd
+\end_inset
+
+ > 
+\begin_inset Quotes eld
+\end_inset
+
+Open SQL Script...
+\begin_inset Quotes erd
+\end_inset
+
+ and select the 
+\emph on
+sakila-schema.sql
+\emph default
+ file.
+ Run this query.
+\end_layout
+
+\begin_layout Enumerate
+\begin_inset Quotes eld
+\end_inset
+
+Query Completed
+\begin_inset Quotes erd
+\end_inset
+
+ should appear in the bottom-left of the window.
+\end_layout
+
+\begin_layout Enumerate
+Go to 
+\begin_inset Quotes eld
+\end_inset
+
+File
+\begin_inset Quotes erd
+\end_inset
+
+ > 
+\begin_inset Quotes eld
+\end_inset
+
+Open SQL Script...
+\begin_inset Quotes erd
+\end_inset
+
+ and select the 
+\emph on
+sakila-data.sql
+\emph default
+ file.
+ Run this query.
+\end_layout
+
+\begin_layout Enumerate
+\begin_inset Quotes eld
+\end_inset
+
+Query Completed
+\begin_inset Quotes erd
+\end_inset
+
+ should appear in the bottom-left of the window.
+\end_layout
+
+\begin_layout Enumerate
+The database is now ready.
+\end_layout
+
+\begin_layout Subsection
+Connecting the backend to the database
+\end_layout
+
+\begin_layout Enumerate
+Go to the Azure Portal and find your app resource.
+\end_layout
+
+\begin_layout Enumerate
+Find 
+\begin_inset Quotes eld
+\end_inset
+
+Configuration
+\begin_inset Quotes erd
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Enumerate
+Add the following 
+\begin_inset Quotes eld
+\end_inset
+
+Application Setting
+\begin_inset Quotes erd
+\end_inset
+
+s.
+\begin_inset Newline newline
+\end_inset
+
+
+\begin_inset Tabular
+<lyxtabular version="3" rows="4" columns="2">
+<features tabularvalignment="middle">
+<column alignment="right" valignment="top">
+<column alignment="left" valignment="top">
+<row>
+<cell alignment="right" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Name
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Value
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="right" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+MYSQL_HOST
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\emph on
+sakila-database-example.mysql.database.azure.com
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="right" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+MYSQL_USERNAME
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\emph on
+tsi@sakila-database-example
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="right" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+MYSQL_PASSWORD
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+the password you entered when setting up the database
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Enumerate
+Your project is deployed!
+\end_layout
+
 \begin_layout Section
 Deployment to AWS
 \end_layout
@@ -3693,6 +4316,25 @@ By deploying to a Docker container, you open up the ability to host your
  Azure and AWS both support Docker containers directly.
  You could also deploy to a Kubernetes cluster, which would allow scaling
  up to a huge size (think Google).
+\end_layout
+
+\begin_layout Standard
+In Spring, deployment to Docker container is very easy...
+\end_layout
+
+\begin_layout Enumerate
+Open a terminal in the root project directory.
+\end_layout
+
+\begin_layout Enumerate
+Run: 
+\emph on
+mvn spring-boot:build-image
+\end_layout
+
+\begin_layout Enumerate
+The image is built and can be pushed, deployed, tagged, etc.
+ as you wish.
 \end_layout
 
 \begin_layout Standard
