@@ -772,7 +772,7 @@ In our new class, we should specify that it is a data entity using the
 
 \begin_layout Standard
 \begin_inset listings
-lstparams "language=Java,basicstyle={\ttfamily},tabsize=2"
+lstparams "language=Java,numbers=left,basicstyle={\ttfamily},tabsize=2"
 inline false
 status open
 
@@ -842,7 +842,7 @@ actor
 
 \begin_layout Standard
 \begin_inset listings
-lstparams "language=SQL,basicstyle={\ttfamily}"
+lstparams "language=SQL,numbers=left,basicstyle={\ttfamily}"
 inline false
 status open
 
@@ -910,7 +910,7 @@ Which can convert directly to Java with JPA:
 
 \begin_layout Standard
 \begin_inset listings
-lstparams "language=Java,basicstyle={\ttfamily}"
+lstparams "language=Java,numbers=left,basicstyle={\ttfamily}"
 inline false
 status open
 
@@ -1036,7 +1036,7 @@ There is one last thing we need in order to be able to make use of our model.
 
 \begin_layout Standard
 \begin_inset listings
-lstparams "language=Java,basicstyle={\ttfamily}"
+lstparams "language=Java,numbers=left,basicstyle={\ttfamily}"
 inline false
 status open
 
@@ -1299,7 +1299,7 @@ JpaRepository<T, ID>
 
 \begin_layout Standard
 \begin_inset listings
-lstparams "language=Java,basicstyle={\ttfamily}"
+lstparams "language=Java,numbers=left,basicstyle={\ttfamily}"
 inline false
 status open
 
@@ -1390,6 +1390,1172 @@ Done! We can now access our database from the code of our application –
 Writing your First Controller
 \end_layout
 
+\begin_layout Subsection
+Writing the Controller Class
+\end_layout
+
+\begin_layout Standard
+A controller allows us to make requests to our site and return with appropriate
+ information.
+ Again, it is sensible to bundle controllers together in a package.
+ Right click the root package and select 
+\emph on
+New
+\emph default
+ → 
+\emph on
+Package
+\emph default
+.
+ Enter 
+\emph on
+controllers
+\emph default
+ so that the full package name is 
+\emph on
+com.softwareinstitute.sakila.controllers
+\emph default
+.
+ Then right click the new package and select 
+\emph on
+New
+\emph default
+ → 
+\emph on
+Java Class
+\emph default
+.
+ Name it ActorController.
+\end_layout
+
+\begin_layout Standard
+In this class, we need to tell Spring that this is a RESTful controller,
+ and that this should be made available online at a particular path.
+ We can do this by annotating the class:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "language=Java,numbers=left,basicstyle={\ttfamily}"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+
+\emph on
+ActorController.java
+\emph default
+ with it's initial annotations.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+package com.softwareinstitute.sakila.controllers;
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+import org.springframework.web.bind.annotation.RequestMapping;
+\end_layout
+
+\begin_layout Plain Layout
+
+import org.springframework.web.bind.annotation.RestController;
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+@RestController
+\end_layout
+
+\begin_layout Plain Layout
+
+@RequestMapping(path = "/actors")
+\end_layout
+
+\begin_layout Plain Layout
+
+public class ActorController {
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+At this stage, it would be a good idea to understand what we are planning
+ to serve to the users.
+ In this guide, I will follow the traditional RESTful approach:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Tabular
+<lyxtabular version="3" rows="5" columns="3">
+<features tabularvalignment="middle">
+<column alignment="right" valignment="top">
+<column alignment="center" valignment="top">
+<column alignment="left" valignment="top">
+<row>
+<cell alignment="right" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Path
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+HTTP Method
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Description
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="right" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family typewriter
+/actors
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+GET
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Get a list of all actors
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="right" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family typewriter
+/actors
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+POST
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Create a new actor
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="right" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family typewriter
+/actors/1
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+GET
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Get a single actor, specified by the ID in the URL
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="right" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+
+\family typewriter
+/actors/1
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+DELETE
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="left" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Delete an actor, specified by the ID in the URL
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Lets consider what we want to do to achieve the list of all actors.
+ We need to receive the request, fetch all actors from the database, then
+ respond to the request with the list as JSON.
+ Thankfully Spring does most of this for us.
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "language=Java,numbers=left,basicstyle={\ttfamily}"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+
+\emph on
+ActorController.java
+\emph default
+ with the 
+\emph on
+getAll
+\emph default
+ path defined.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+package com.softwareinstitute.sakila.controllers;
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+import com.softwareinstitute.sakila.dtos.ActorDto;
+\end_layout
+
+\begin_layout Plain Layout
+
+import com.softwareinstitute.sakila.repositories.ActorRepository;
+\end_layout
+
+\begin_layout Plain Layout
+
+import org.springframework.web.bind.annotation.GetMapping;
+\end_layout
+
+\begin_layout Plain Layout
+
+import org.springframework.web.bind.annotation.RequestMapping;
+\end_layout
+
+\begin_layout Plain Layout
+
+import org.springframework.web.bind.annotation.RestController;
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+import java.util.List;
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+@RestController
+\end_layout
+
+\begin_layout Plain Layout
+
+@RequestMapping(path = "/actors")
+\end_layout
+
+\begin_layout Plain Layout
+
+public class ActorController {
+\end_layout
+
+\begin_layout Plain Layout
+
+    private final ActorRepository actorRepository;
+\end_layout
+
+\begin_layout Plain Layout
+
+    public ActorController(ActorRepository actorRepository) {
+\end_layout
+
+\begin_layout Plain Layout
+
+        this.actorRepository = actorRepository;
+\end_layout
+
+\begin_layout Plain Layout
+
+    }
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+    @GetMapping("")
+\end_layout
+
+\begin_layout Plain Layout
+
+    public List<ActorDto> getAll() {
+\end_layout
+
+\begin_layout Plain Layout
+
+        return actorRepository.findAll()
+\end_layout
+
+\begin_layout Plain Layout
+
+                .stream().map(ActorDto::new)
+\end_layout
+
+\begin_layout Plain Layout
+
+                .toList();
+\end_layout
+
+\begin_layout Plain Layout
+
+    }
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+In this listing, lines 14-17 give us access to our repository from earlier.
+ Spring has already connected this to the database for us, so we can now
+ make use of it.
+ Note that it is defined as 
+\emph on
+final
+\emph default
+.
+ This simply means that once it has been defined, it cannot be redefined.
+\end_layout
+
+\begin_layout Standard
+In lines 20-24, you may ask why we return a list of 
+\emph on
+ActorDto
+\emph default
+ rather than a list of 
+\emph on
+Actor
+\emph default
+.
+ In Spring, it is bad practice to return database models and can lead to
+ some security issues.
+ As such, we need to use data transfer object (DTO) to represent the same
+ data in a safe way.
+ Lines 21-23 are then taking the 
+\emph on
+List<Actor>
+\emph default
+ returned by 
+\emph on
+findAll()
+\emph default
+ and converting it to a 
+\emph on
+List<ActorDto>
+\emph default
+ by calling the constructor on 
+\emph on
+ActorDto
+\emph default
+ for each 
+\emph on
+Actor
+\emph default
+ in the database.
+\end_layout
+
+\begin_layout Subsection
+Writing the Actor DTO (Data Transfer Object)
+\end_layout
+
+\begin_layout Standard
+In order to facilitate our request, we need a DTO.
+ First make a 
+\emph on
+com.softwareinstitute.sakila.dtos
+\emph default
+ package, then a new Java class inside called 
+\emph on
+ActorDto
+\emph default
+.
+\end_layout
+
+\begin_layout Standard
+Our DTO needs three things: the data we are holding, getters for that data,
+ and a way of making the DTO.
+ We can define this in pure Java:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "language=Java,numbers=left,basicstyle={\ttfamily}"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+
+\emph on
+ActorDto.java
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+package com.softwareinstitute.sakila.dtos;
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+import com.softwareinstitute.sakila.models.Actor;
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+public class ActorDto {
+\end_layout
+
+\begin_layout Plain Layout
+
+    private final Integer id;
+\end_layout
+
+\begin_layout Plain Layout
+
+    private final String firstName;
+\end_layout
+
+\begin_layout Plain Layout
+
+    private final String lastName;
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+    public ActorDto(Actor a) {
+\end_layout
+
+\begin_layout Plain Layout
+
+        this.id = a.getActorId();
+\end_layout
+
+\begin_layout Plain Layout
+
+        this.firstName = a.getFirstName();
+\end_layout
+
+\begin_layout Plain Layout
+
+        this.lastName = a.getLastName();
+\end_layout
+
+\begin_layout Plain Layout
+
+    }
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+    public Integer getId() {
+\end_layout
+
+\begin_layout Plain Layout
+
+        return id;
+\end_layout
+
+\begin_layout Plain Layout
+
+    }
+\end_layout
+
+\begin_layout Plain Layout
+
+    public String getFirstName() {
+\end_layout
+
+\begin_layout Plain Layout
+
+        return firstName;
+\end_layout
+
+\begin_layout Plain Layout
+
+    }
+\end_layout
+
+\begin_layout Plain Layout
+
+    public String getLastName() {
+\end_layout
+
+\begin_layout Plain Layout
+
+        return lastName;
+\end_layout
+
+\begin_layout Plain Layout
+
+    }
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+You can see in lines 10-14 that this defines how we get from an 
+\emph on
+Actor
+\emph default
+ to an 
+\emph on
+ActorDto
+\emph default
+ by calling the constructor.
+\end_layout
+
+\begin_layout Subsection
+Writing the Actor Create DTO
+\end_layout
+
+\begin_layout Standard
+If we need DTOs to use for the API, we also need a DTO to accept data from
+ the user.
+ This also ensures that in more complex data objects the user doesn't submit
+ any data we don't them to have.
+ This looks very similar to the 
+\emph on
+ActorDto
+\emph default
+, except with setters as well.
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "language=Java,numbers=left,basicstyle={\ttfamily}"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+
+\emph on
+ActorCreateDto.java
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+package com.softwareinstitute.sakila.dtos;
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+public class ActorCreateDto {
+\end_layout
+
+\begin_layout Plain Layout
+
+    private String firstName;
+\end_layout
+
+\begin_layout Plain Layout
+
+    private String lastName;
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+    public String getFirstName() {
+\end_layout
+
+\begin_layout Plain Layout
+
+        return firstName;
+\end_layout
+
+\begin_layout Plain Layout
+
+    }
+\end_layout
+
+\begin_layout Plain Layout
+
+    public void setFirstName(String firstName) {
+\end_layout
+
+\begin_layout Plain Layout
+
+        this.firstName = firstName;
+\end_layout
+
+\begin_layout Plain Layout
+
+    }
+\end_layout
+
+\begin_layout Plain Layout
+
+    public String getLastName() {
+\end_layout
+
+\begin_layout Plain Layout
+
+        return lastName;
+\end_layout
+
+\begin_layout Plain Layout
+
+    }
+\end_layout
+
+\begin_layout Plain Layout
+
+    public void setLastName(String lastName) {
+\end_layout
+
+\begin_layout Plain Layout
+
+        this.lastName = lastName;
+\end_layout
+
+\begin_layout Plain Layout
+
+    }
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Writing the Actor Create Route
+\end_layout
+
+\begin_layout Standard
+Now we have the DTO, we can write the route to create an actor.
+ See the following code:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "language=Java,numbers=left,basicstyle={\ttfamily}"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+
+\emph on
+ActorController.java
+\emph default
+ snippet for 
+\emph on
+create
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+    @PostMapping("")
+\end_layout
+
+\begin_layout Plain Layout
+
+    public ActorDto create(@RequestBody ActorCreateDto actorCreateDto) {
+\end_layout
+
+\begin_layout Plain Layout
+
+        Actor a = new Actor();
+\end_layout
+
+\begin_layout Plain Layout
+
+        a.setFirstName(actorCreateDto.getFirstName());
+\end_layout
+
+\begin_layout Plain Layout
+
+        a.setLastName(actorCreateDto.getLastName());
+\end_layout
+
+\begin_layout Plain Layout
+
+        return new ActorDto(actorRepository.save(a));
+\end_layout
+
+\begin_layout Plain Layout
+
+    }
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+At this point, a pattern is emerging.
+ The 
+\emph on
+@XXXMapping
+\emph default
+ annotation defines which HTTP method the request will be for, the path
+ specified in the brackets as a child of the path specified in 
+\emph on
+@RequestMapping(...)
+\emph default
+ for the whole class.
+ We can accept a JSON body as a payload with the 
+\emph on
+@RequestBody
+\emph default
+ annotation and can accept the 
+\emph on
+ActorCreateDto
+\emph default
+ here.
+ We then construct an 
+\emph on
+Actor
+\emph default
+, which is suitable for our database and ask the 
+\emph on
+ActorRepository
+\emph default
+ to save it, returning it as a DTO.
+\end_layout
+
+\begin_layout Subsection
+Outcome
+\end_layout
+
+\begin_layout Standard
+As a result of our two routes, we can now make requests to our endpoint:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "numbers=left,basicstyle={\ttfamily}"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+
+HTTP request to /actors
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+GET /actors HTTP/1.1
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+HTTP/1.1 200
+\end_layout
+
+\begin_layout Plain Layout
+
+Content-Type: application/json
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+[
+\end_layout
+
+\begin_layout Plain Layout
+
+    {
+\end_layout
+
+\begin_layout Plain Layout
+
+        "firstName": "PENELOPE",
+\end_layout
+
+\begin_layout Plain Layout
+
+        "id": 1,
+\end_layout
+
+\begin_layout Plain Layout
+
+        "lastName": "GUINESS"
+\end_layout
+
+\begin_layout Plain Layout
+
+    },
+\end_layout
+
+\begin_layout Plain Layout
+
+    {
+\end_layout
+
+\begin_layout Plain Layout
+
+        "firstName": "NICK",
+\end_layout
+
+\begin_layout Plain Layout
+
+        "id": 2,
+\end_layout
+
+\begin_layout Plain Layout
+
+        "lastName": "WAHLBERG"
+\end_layout
+
+\begin_layout Plain Layout
+
+    },
+\end_layout
+
+\begin_layout Plain Layout
+
+    ...
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+And we can also create a new actor by providing a request payload:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "numbers=left,basicstyle={\ttfamily}"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+HTTP POST request to /actors
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+POST /actors HTTP/1.1
+\end_layout
+
+\begin_layout Plain Layout
+
+Accept: application/json, */*;q=0.5
+\end_layout
+
+\begin_layout Plain Layout
+
+Content-Length: 46
+\end_layout
+
+\begin_layout Plain Layout
+
+Content-Type: application/json
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\begin_layout Plain Layout
+
+    "firstName": "Obi-Wan",
+\end_layout
+
+\begin_layout Plain Layout
+
+    "lastName": "Kenobi"
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+HTTP/1.1 200
+\end_layout
+
+\begin_layout Plain Layout
+
+Content-Type: application/json
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\begin_layout Plain Layout
+
+    "firstName": "Obi-Wan",
+\end_layout
+
+\begin_layout Plain Layout
+
+    "id": 201,
+\end_layout
+
+\begin_layout Plain Layout
+
+    "lastName": "Kenobi"
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+We can see from this example that the actor has been created and has been
+ assigned ID 201.
+ This can be confirmed through inspection of the database.
+\end_layout
+
+\begin_layout Standard
+The individual actor fetch and actor delete endpoints are left as an exercise
+ to the reader.
+\end_layout
+
 \begin_layout Section
 DRY (Don't Repeat Yourself)
 \end_layout
@@ -1409,6 +2575,41 @@ must
 \end_layout
 
 \begin_layout Standard
+At this point in your Spring journey, you surely are thinking 
+\begin_inset Quotes eld
+\end_inset
+
+do I 
+\emph on
+really
+\emph default
+ need to write 
+\emph on
+that much
+\emph default
+ for every single part of the database?
+\begin_inset Quotes erd
+\end_inset
+
+.
+ The simple answer is no.
+ A lot of the code we have written is boilerplate, and Lombok can write
+ it for us.
+\end_layout
+
+\begin_layout Subsection
+Writing your Second Model and Repository
+\end_layout
+
+\begin_layout Subsection
+Writing your Second Controller
+\end_layout
+
+\begin_layout Section
+Modelling Database Relations
+\end_layout
+
+\begin_layout Standard
 \begin_inset Newpage pagebreak
 \end_inset
 
@@ -1417,6 +2618,10 @@ must
 
 \begin_layout Part
 Deployment
+\end_layout
+
+\begin_layout Section
+Preparing for Any Deployment
 \end_layout
 
 \begin_layout Section
@@ -1459,6 +2664,39 @@ If this has just whet your appetite for more Java, consider some of these
  tasks as ways to extend your project and it's functionality.
  Some pointers to guides will be included, including a level of difficulty
  for each.
+\end_layout
+
+\begin_layout Section*
+Authentication and Authorisation (Hard)
+\end_layout
+
+\begin_layout Paragraph*
+Brief
+\end_layout
+
+\begin_layout Standard
+Modern web APIs often cannot afford to let anyone access them – imagine
+ if anyone could make a bank transaction for you! Implement authentication
+ and authorisation to your API – you can decide what needs authorisation,
+ whether that be all of it or only parts.
+\end_layout
+
+\begin_layout Paragraph*
+Hints
+\end_layout
+
+\begin_layout Standard
+One approach might use JSON Web Tokens (JWT), which a guide like 
+\begin_inset CommandInset href
+LatexCommand href
+name "this one from BezKoder"
+target "https://www.bezkoder.com/spring-boot-security-jwt/"
+literal "false"
+
+\end_inset
+
+ might help.
+ Alternatively, you may choose to implement HTTP Basic or Digest authentication.
 \end_layout
 
 \end_body
