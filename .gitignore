@@ -1,6 +1,7 @@
 ### LyX ###
 *.lyx~
 *.lyx#
+/*.pdf
 
 ### Spring ###
 HELP.md
