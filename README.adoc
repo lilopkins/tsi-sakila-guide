@@ -1,0 +1,4 @@
+= TSI Guide to the Sakila Project
+
+Check the https://github.com/lilopkins/tsi-sakila-guide/releases[releases^] section for the latest version of the guide.
+
