@@ -561,7 +561,7 @@ When we are not making the database ourself, it is important to understand
  (Figure 
 \begin_inset CommandInset ref
 LatexCommand ref
-reference "sakila-erd"
+reference "fig:sakila-erd"
 plural "false"
 caps "false"
 noprefix "false"
@@ -584,7 +584,7 @@ status open
 \begin_layout Plain Layout
 \begin_inset CommandInset label
 LatexCommand label
-name "sakila-erd"
+name "fig:sakila-erd"
 
 \end_inset
 
@@ -637,7 +637,7 @@ actor
  table (top-left of figure 
 \begin_inset CommandInset ref
 LatexCommand ref
-reference "sakila-erd"
+reference "fig:sakila-erd"
 plural "false"
 caps "false"
 noprefix "false"
@@ -2601,12 +2601,883 @@ that much
 Writing your Second Model and Repository
 \end_layout
 
+\begin_layout Standard
+Let's write a model for a film.
+ From the database, it looks like can be seen in figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:film-erd"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement h
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:film-erd"
+
+\end_inset
+
+A partial ERD centered on the 
+\emph on
+film
+\emph default
+ table.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename guide-images/film-erd.png
+	lyxscale 50
+	width 100text%
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Let's write this in Java, but with some help from Lombok.
+ Our model ends up looking like this:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "language=Java,numbers=left,basicstyle={\ttfamily}"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+
+\emph on
+Film.java
+\emph default
+ with Lombok
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+package com.softwareinstitute.sakila.models;
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+import jakarta.persistence.Entity;
+\end_layout
+
+\begin_layout Plain Layout
+
+import jakarta.persistence.GeneratedValue;
+\end_layout
+
+\begin_layout Plain Layout
+
+import jakarta.persistence.GenerationType;
+\end_layout
+
+\begin_layout Plain Layout
+
+import jakarta.persistence.Id;
+\end_layout
+
+\begin_layout Plain Layout
+
+import lombok.*;
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+import java.math.BigDecimal;
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+@Entity
+\end_layout
+
+\begin_layout Plain Layout
+
+@RequiredArgsConstructor
+\end_layout
+
+\begin_layout Plain Layout
+
+@Getter
+\end_layout
+
+\begin_layout Plain Layout
+
+@Setter
+\end_layout
+
+\begin_layout Plain Layout
+
+public class Film {
+\end_layout
+
+\begin_layout Plain Layout
+
+    @Id
+\end_layout
+
+\begin_layout Plain Layout
+
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+\end_layout
+
+\begin_layout Plain Layout
+
+    private Integer filmId;
+\end_layout
+
+\begin_layout Plain Layout
+
+    private String title;
+\end_layout
+
+\begin_layout Plain Layout
+
+    private String description;
+\end_layout
+
+\begin_layout Plain Layout
+
+    private Integer releaseYear;
+\end_layout
+
+\begin_layout Plain Layout
+
+    private Integer rentalDuration;
+\end_layout
+
+\begin_layout Plain Layout
+
+    private BigDecimal rentalRate;
+\end_layout
+
+\begin_layout Plain Layout
+
+    private Integer length;
+\end_layout
+
+\begin_layout Plain Layout
+
+    private BigDecimal replacementCost;
+\end_layout
+
+\begin_layout Plain Layout
+
+    private String rating;
+\end_layout
+
+\begin_layout Plain Layout
+
+    private String specialFeatures;
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+A significant improvement over having to write however-many getters and
+ setters.
+ We can now focus on just what matters.
+ Our repository is already fairly short, so stays pretty much the same:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "language=Java,numbers=left,basicstyle={\ttfamily}"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+
+\emph on
+FilmRepository.java
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+package com.softwareinstitute.sakila.repositories;
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+import com.softwareinstitute.sakila.models.Film;
+\end_layout
+
+\begin_layout Plain Layout
+
+import org.springframework.data.jpa.repository.JpaRepository;
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+public interface FilmRepository extends JpaRepository<Film, Integer> { }
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
 \begin_layout Subsection
 Writing your Second Controller
 \end_layout
 
-\begin_layout Section
-Modelling Database Relations
+\begin_layout Standard
+In order to create a second controller, we need to create our 
+\emph on
+FilmDto
+\emph default
+ and 
+\emph on
+FilmCreateDto
+\emph default
+ classes first.
+ They look similar, but again a lot less boilerplate code:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "language=Java,numbers=left,basicstyle={\ttfamily}"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+
+\emph on
+FilmDto.java
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+package com.softwareinstitute.sakila.dtos;
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+import com.softwareinstitute.sakila.models.Film;
+\end_layout
+
+\begin_layout Plain Layout
+
+import lombok.Data;
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+import java.math.BigDecimal;
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+@Data
+\end_layout
+
+\begin_layout Plain Layout
+
+public class FilmDto {
+\end_layout
+
+\begin_layout Plain Layout
+
+    private final Integer id;
+\end_layout
+
+\begin_layout Plain Layout
+
+    private final String title;
+\end_layout
+
+\begin_layout Plain Layout
+
+    private final String description;
+\end_layout
+
+\begin_layout Plain Layout
+
+    private final Integer releaseYear;
+\end_layout
+
+\begin_layout Plain Layout
+
+    private final Integer rentalDuration;
+\end_layout
+
+\begin_layout Plain Layout
+
+    private final BigDecimal rentalRate;
+\end_layout
+
+\begin_layout Plain Layout
+
+    private final Integer length;
+\end_layout
+
+\begin_layout Plain Layout
+
+    private final BigDecimal replacementCost;
+\end_layout
+
+\begin_layout Plain Layout
+
+    private final String rating;
+\end_layout
+
+\begin_layout Plain Layout
+
+    private final String specialFeatures;
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+    public FilmDto(Film f) {
+\end_layout
+
+\begin_layout Plain Layout
+
+        this.id = f.getFilmId();
+\end_layout
+
+\begin_layout Plain Layout
+
+        this.title = f.getTitle();
+\end_layout
+
+\begin_layout Plain Layout
+
+        this.description = f.getDescription();
+\end_layout
+
+\begin_layout Plain Layout
+
+        this.releaseYear = f.getReleaseYear();
+\end_layout
+
+\begin_layout Plain Layout
+
+        this.rentalDuration = f.getRentalDuration();
+\end_layout
+
+\begin_layout Plain Layout
+
+        this.rentalRate = f.getRentalRate();
+\end_layout
+
+\begin_layout Plain Layout
+
+        this.length = f.getLength();
+\end_layout
+
+\begin_layout Plain Layout
+
+        this.replacementCost = f.getReplacementCost();
+\end_layout
+
+\begin_layout Plain Layout
+
+        this.rating = f.getRating();
+\end_layout
+
+\begin_layout Plain Layout
+
+        this.specialFeatures = f.getSpecialFeatures();
+\end_layout
+
+\begin_layout Plain Layout
+
+    }
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "language=Java,numbers=left,basicstyle={\ttfamily}"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+
+\emph on
+FilmCreateDto.java
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+package com.softwareinstitute.sakila.dtos;
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+import lombok.Data;
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+import java.math.BigDecimal;
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+@Data
+\end_layout
+
+\begin_layout Plain Layout
+
+public class FilmCreateDto {
+\end_layout
+
+\begin_layout Plain Layout
+
+    private String title;
+\end_layout
+
+\begin_layout Plain Layout
+
+    private String description;
+\end_layout
+
+\begin_layout Plain Layout
+
+    private Integer releaseYear;
+\end_layout
+
+\begin_layout Plain Layout
+
+    private Integer rentalDuration;
+\end_layout
+
+\begin_layout Plain Layout
+
+    private BigDecimal rentalRate;
+\end_layout
+
+\begin_layout Plain Layout
+
+    private Integer length;
+\end_layout
+
+\begin_layout Plain Layout
+
+    private BigDecimal replacementCost;
+\end_layout
+
+\begin_layout Plain Layout
+
+    private String rating;
+\end_layout
+
+\begin_layout Plain Layout
+
+    private String specialFeatures;
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+And then our controller can also benefit from such improvements:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "language=Java,numbers=left,basicstyle={\ttfamily}"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+
+\emph on
+FilmController.java
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+package com.softwareinstitute.sakila.controllers;
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+import com.softwareinstitute.sakila.dtos.FilmCreateDto;
+\end_layout
+
+\begin_layout Plain Layout
+
+import com.softwareinstitute.sakila.dtos.FilmDto;
+\end_layout
+
+\begin_layout Plain Layout
+
+import com.softwareinstitute.sakila.models.Film;
+\end_layout
+
+\begin_layout Plain Layout
+
+import com.softwareinstitute.sakila.repositories.FilmRepository;
+\end_layout
+
+\begin_layout Plain Layout
+
+import lombok.RequiredArgsConstructor;
+\end_layout
+
+\begin_layout Plain Layout
+
+import org.springframework.http.HttpStatus;
+\end_layout
+
+\begin_layout Plain Layout
+
+import org.springframework.web.bind.annotation.*;
+\end_layout
+
+\begin_layout Plain Layout
+
+import org.springframework.web.server.ResponseStatusException;
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+import java.util.List;
+\end_layout
+
+\begin_layout Plain Layout
+
+import java.util.Optional;
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+@RestController
+\end_layout
+
+\begin_layout Plain Layout
+
+@RequestMapping("/films")
+\end_layout
+
+\begin_layout Plain Layout
+
+@RequiredArgsConstructor
+\end_layout
+
+\begin_layout Plain Layout
+
+public class FilmController {
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+    private final FilmRepository filmRepository;
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+    @GetMapping("")
+\end_layout
+
+\begin_layout Plain Layout
+
+    public List<FilmDto> getAll() {
+\end_layout
+
+\begin_layout Plain Layout
+
+        return filmRepository.findAll()
+\end_layout
+
+\begin_layout Plain Layout
+
+                .stream().map(FilmDto::new)
+\end_layout
+
+\begin_layout Plain Layout
+
+                .toList();
+\end_layout
+
+\begin_layout Plain Layout
+
+    }
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+    @PostMapping("")
+\end_layout
+
+\begin_layout Plain Layout
+
+    public FilmDto create(@RequestBody FilmCreateDto filmCreateDto) {
+\end_layout
+
+\begin_layout Plain Layout
+
+        Film a = new Film();
+\end_layout
+
+\begin_layout Plain Layout
+
+        return new FilmDto(filmRepository.save(a));
+\end_layout
+
+\begin_layout Plain Layout
+
+    }
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+    @GetMapping("/{id}")
+\end_layout
+
+\begin_layout Plain Layout
+
+    public FilmDto getOne(@PathVariable("id") Integer id) {
+\end_layout
+
+\begin_layout Plain Layout
+
+        Optional<FilmDto> filmDto = filmRepository.findById(id)
+\end_layout
+
+\begin_layout Plain Layout
+
+                .map(FilmDto::new);
+\end_layout
+
+\begin_layout Plain Layout
+
+        if (filmDto.isEmpty()) {
+\end_layout
+
+\begin_layout Plain Layout
+
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+\end_layout
+
+\begin_layout Plain Layout
+
+        }
+\end_layout
+
+\begin_layout Plain Layout
+
+        return filmDto.get();
+\end_layout
+
+\begin_layout Plain Layout
+
+    }
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+    @DeleteMapping("/{id}")
+\end_layout
+
+\begin_layout Plain Layout
+
+    public void deleteOne(@PathVariable("id") Integer id) {
+\end_layout
+
+\begin_layout Plain Layout
+
+        filmRepository.deleteById(id);
+\end_layout
+
+\begin_layout Plain Layout
+
+    }
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Standard
@@ -2667,7 +3538,28 @@ If this has just whet your appetite for more Java, consider some of these
 \end_layout
 
 \begin_layout Section*
-Authentication and Authorisation (Hard)
+Model the Database (easy)
+\end_layout
+
+\begin_layout Paragraph*
+Brief
+\end_layout
+
+\begin_layout Standard
+Model the remainder of the database and all relationships between each table.
+\end_layout
+
+\begin_layout Paragraph*
+Hints
+\end_layout
+
+\begin_layout Standard
+The most important thing to focus on when modelling relationships is having
+ accurate and well written models – focus on this!
+\end_layout
+
+\begin_layout Section*
+Authentication and Authorisation (hard)
 \end_layout
 
 \begin_layout Paragraph*
