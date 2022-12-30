@@ -3495,6 +3495,182 @@ Deployment
 Preparing for Any Deployment
 \end_layout
 
+\begin_layout Standard
+Before we can deploy to a platform, our project needs to be ready.
+ We need to take the following actions:
+\end_layout
+
+\begin_layout Itemize
+Ensure that the compiled form of our project will be using the correct Java
+ version.
+\end_layout
+
+\begin_layout Itemize
+Enable our 
+\emph on
+application.properties
+\emph default
+ to be able to point at different places our database could be.
+\end_layout
+
+\begin_layout Subsection
+Compiling with the Correct Java Version
+\end_layout
+
+\begin_layout Standard
+In order to make sure we compile with the correct Java version, we need
+ to go into our 
+\emph on
+pom.xml
+\emph default
+ file, which defines how the program is built.
+ From here, we need to locate the 
+\emph on
+<properties>...</properties>
+\emph default
+ tag, as this is where we define the Java version.
+ We then need to add the following properties:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "language=XML,numbers=left,basicstyle={\ttfamily}"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+
+\emph on
+pom.xml
+\emph default
+ additions for specifying the Java version
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+<properties>
+\end_layout
+
+\begin_layout Plain Layout
+
+    <!-- other properties...
+ -->
+\end_layout
+
+\begin_layout Plain Layout
+
+    <maven.compiler.source>17</maven.compiler.source>
+\end_layout
+
+\begin_layout Plain Layout
+
+    <maven.compiler.target>17</maven.compiler.target>
+\end_layout
+
+\begin_layout Plain Layout
+
+</properties>
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Dynamic Database Location
+\end_layout
+
+\begin_layout Standard
+To allow us to configure where the database might be at runtime, we can
+ use environment variables.
+ These can be accessed directly from our 
+\emph on
+application.properties
+\emph default
+ file.
+ Change your application.properties to:
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+lstparams "numbers=left,basicstyle={\ttfamily}"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+
+Updated 
+\emph on
+application.properties
+\emph default
+ for deployment
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+spring.datasource.url=
+\backslash
+
+\end_layout
+
+\begin_layout Plain Layout
+
+jdbc:mysql://${MYSQL_HOST:localhost}:${MYSQL_PORT:3306}/${MYSQL_DATABASE:sakila}
+\end_layout
+
+\begin_layout Plain Layout
+
+spring.datasource.username=${MYSQL_USERNAME:sakila}
+\end_layout
+
+\begin_layout Plain Layout
+
+spring.datasource.password=${MYSQL_PASSWORD:tsi}
+\end_layout
+
+\begin_layout Plain Layout
+
+spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
+\end_layout
+
+\begin_layout Plain Layout
+
+spring.jpa.show-sql=${MYSQL_DEBUG:false}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+This allows us to change the database hostname, port, username, password
+ and database name through environment variables.
+ It also lets us adjust the debug mode value, which can show us the SQL
+ being executed.
+ Note that we have broken the database URL across two lines here for readability
+ – you do not need to do this to achieve the same result.
+\end_layout
+
 \begin_layout Section
 Deployment to Azure
 \end_layout
